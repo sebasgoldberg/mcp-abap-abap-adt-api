@@ -8,25 +8,25 @@ export class RenameHandlers extends BaseHandler {
         return [
             {
                 name: 'renameEvaluate',
-                description: 'Evaluates a rename refactoring.',
+                description: 'Evaluates the feasibility of a rename refactoring operation for a symbol at a specific location. This analyzes the selected symbol to determine if it can be safely renamed, identifying all references across the codebase and checking for potential conflicts or naming violations. Returns a proposal with the symbol information and impact analysis.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         uri: {
                             type: 'string',
-                            description: 'The URI of the object to rename.'
+                            description: 'The URI of the ABAP object containing the symbol to rename. Examples: "/sap/bc/adt/oo/classes/zcl_customer_api", "/sap/bc/adt/programs/zsales_report". Use complete ADT object URIs.'
                         },
                         line: {
                             type: 'number',
-                            description: 'The line number.'
+                            description: 'The line number where the symbol to rename is located. Use 1-based line numbering (first line is 1).'
                         },
                         startColumn: {
                             type: 'number',
-                            description: 'The starting column.'
+                            description: 'The starting column position of the symbol to rename. Use 1-based column numbering (first column is 1).'
                         },
                         endColumn: {
                             type: 'number',
-                            description: 'The ending column.'
+                            description: 'The ending column position of the symbol to rename. Use 1-based column numbering. Should be startColumn + symbol_length.'
                         }
                     },
                     required: ['uri', 'line', 'startColumn', 'endColumn']
@@ -34,17 +34,17 @@ export class RenameHandlers extends BaseHandler {
             },
             {
                 name: 'renamePreview',
-                description: 'Previews a rename refactoring.',
+                description: 'Previews the changes that will be made by a rename refactoring operation. Shows all locations where the symbol will be renamed, including the old and new names, and identifies all affected files. This allows you to review the scope of changes before applying the refactoring.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         renameRefactoring: {
                             type: 'object',
-                            description: 'The rename refactoring proposal.'
+                            description: 'The rename refactoring proposal object returned by renameEvaluate. This contains the symbol information, proposed new name, and all references to be updated.'
                         },
                         transport: {
                             type: 'string',
-                            description: 'The transport.',
+                            description: 'The transport request number to use for the rename operation. Required when the rename affects objects that need to be transported. Examples: "DEVK900001", "DEVK900123".',
                             optional: true
                         }
                     },
@@ -53,13 +53,13 @@ export class RenameHandlers extends BaseHandler {
             },
             {
                 name: 'renameExecute',
-                description: 'Executes a rename refactoring.',
+                description: 'Executes the rename refactoring operation, applying all changes to the affected objects. This updates the symbol name across all references in the codebase. The operation is atomic - either all changes are applied successfully or none are applied. Objects may need to be locked and activated after the rename.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         refactoring: {
                             type: 'object',
-                            description: 'The rename refactoring.'
+                            description: 'The rename refactoring object containing the finalized parameters for the rename operation. This should be obtained from the preview step and contains the new symbol name and all locations to be updated.'
                         }
                     },
                     required: ['refactoring']

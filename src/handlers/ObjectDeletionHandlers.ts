@@ -8,21 +8,21 @@ export class ObjectDeletionHandlers extends BaseHandler {
     return [
       {
         name: 'deleteObject',
-        description: 'Deletes an ABAP object from the system',
+        description: 'Deletes an ABAP object from the SAP system permanently. This operation removes the object from the repository and all its associated metadata. The object must be locked before deletion and may require transport authorization. Use with extreme caution as this operation cannot be undone. Consider deactivating objects instead of deleting them for safety.',
         inputSchema: {
           type: 'object',
           properties: {
             objectUrl: { 
               type: 'string',
-              description: 'URL of the object to delete'
+              description: 'The URL of the ABAP object to delete. Examples: "/sap/bc/adt/oo/classes/zcl_test_class", "/sap/bc/adt/programs/ztest_program", "/sap/bc/adt/functions/groups/zfg_test". Use complete ADT object URLs obtained from search operations.'
             },
             lockHandle: { 
               type: 'string',
-              description: 'Lock handle for the object'
+              description: 'The lock handle obtained from a previous lock operation. This ensures exclusive access to the object during deletion and prevents concurrent modifications. Required for all delete operations.'
             },
             transport: { 
               type: 'string',
-              description: 'Transport request number',
+              description: 'The transport request number to record the deletion. Required when the object needs to be transported to other systems. Examples: "DEVK900001", "DEVK900123". Leave empty for local objects.',
               optional: true
             }
           },

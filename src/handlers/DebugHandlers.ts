@@ -8,29 +8,29 @@ export class DebugHandlers extends BaseHandler {
         return [
             {
                 name: 'debuggerListeners',
-                description: 'Retrieves a list of debugger listeners.',
+                description: 'Retrieves a list of active debugger listeners in the SAP system. Debugger listeners are processes that wait for debugging events and breakpoint hits. This tool shows which debugging sessions are active and helps manage concurrent debugging scenarios.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         debuggingMode: {
                             type: 'string',
-                            description: 'The debugging mode.'
+                            description: 'The debugging mode to check. Examples: "USER" for user debugging, "SYSTEM" for system debugging, "HTTP" for HTTP debugging.'
                         },
                         terminalId: {
                             type: 'string',
-                            description: 'The terminal ID.'
+                            description: 'The terminal ID associated with the debugging session. This is typically a unique identifier for the client terminal or session.'
                         },
                         ideId: {
                             type: 'string',
-                            description: 'The IDE ID.'
+                            description: 'The IDE identifier for the debugging session. This identifies the development environment or tool that initiated the debugging session.'
                         },
                         user: {
                             type: 'string',
-                            description: 'The user.'
+                            description: 'The user ID for the debugging session. Examples: "DEVELOPER", "JOHN.DOE".'
                         },
                         checkConflict: {
                             type: 'boolean',
-                            description: 'Whether to check for conflicts.',
+                            description: 'Whether to check for debugging conflicts. Set to true to verify if multiple debugging sessions might interfere with each other.',
                             optional: true
                         }
                     },
@@ -39,34 +39,34 @@ export class DebugHandlers extends BaseHandler {
             },
             {
                 name: 'debuggerListen',
-                description: 'Listens for debugging events.',
+                description: 'Starts a debugger listener to wait for debugging events and breakpoint hits. This establishes a debugging session that can intercept program execution when breakpoints are encountered. Essential for interactive debugging of ABAP programs.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         debuggingMode: {
                             type: 'string',
-                            description: 'The debugging mode.'
+                            description: 'The debugging mode to use. Examples: "USER" for user debugging, "SYSTEM" for system debugging, "HTTP" for HTTP debugging.'
                         },
                         terminalId: {
                             type: 'string',
-                            description: 'The terminal ID.'
+                            description: 'The terminal ID for the debugging session. This is typically a unique identifier for the client terminal or session.'
                         },
                         ideId: {
                             type: 'string',
-                            description: 'The IDE ID.'
+                            description: 'The IDE identifier for the debugging session. This identifies the development environment or tool that initiated the debugging session.'
                         },
                         user: {
                             type: 'string',
-                            description: 'The user.'
+                            description: 'The user ID for the debugging session. Examples: "DEVELOPER", "JOHN.DOE".'
                         },
                         checkConflict: {
                             type: 'boolean',
-                            description: 'Whether to check for conflicts.',
+                            description: 'Whether to check for debugging conflicts before starting the listener. Set to true to verify if multiple debugging sessions might interfere with each other.',
                             optional: true
                         },
                         isNotifiedOnConflict: {
                             type: 'boolean',
-                            description: 'Whether to be notified on conflict.',
+                            description: 'Whether to receive notifications when debugging conflicts occur. Set to true to be alerted about conflicting debugging sessions.',
                             optional: true
                         }
                     },
@@ -101,52 +101,52 @@ export class DebugHandlers extends BaseHandler {
             },
             {
                 name: 'debuggerSetBreakpoints',
-                description: 'Sets breakpoints.',
+                description: 'Sets breakpoints in ABAP programs for debugging. Breakpoints pause program execution at specific lines, allowing developers to inspect variable values, step through code, and analyze program flow. This is a fundamental debugging tool for troubleshooting and understanding program behavior.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         debuggingMode: {
                             type: 'string',
-                            description: 'The debugging mode.'
+                            description: 'The debugging mode to use. Examples: "USER" for user debugging, "SYSTEM" for system debugging, "HTTP" for HTTP debugging.'
                         },
                         terminalId: {
                             type: 'string',
-                            description: 'The terminal ID.'
+                            description: 'The terminal ID for the debugging session. This is typically a unique identifier for the client terminal or session.'
                         },
                         ideId: {
                             type: 'string',
-                            description: 'The IDE ID.'
+                            description: 'The IDE identifier for the debugging session. This identifies the development environment or tool that initiated the debugging session.'
                         },
                         clientId: {
                             type: 'string',
-                            description: 'The client ID.'
+                            description: 'The client ID for the debugging session. This identifies the specific client instance within the IDE.'
                         },
                         breakpoints: {
                             type: 'array',
-                            description: 'An array of breakpoints.'
+                            description: 'An array of breakpoint objects. Each breakpoint should specify the program/object URI, line number, and optionally conditions or hit counts.'
                         },
                         user: {
                             type: 'string',
-                            description: 'The user.'
+                            description: 'The user ID for the debugging session. Examples: "DEVELOPER", "JOHN.DOE".'
                         },
                         scope: {
                             type: 'string',
-                            description: 'The debugger scope.',
+                            description: 'The debugger scope that determines where breakpoints are active. Examples: "SESSION", "USER", "SYSTEM".',
                             optional: true
                         },
                         systemDebugging: {
                             type: 'boolean',
-                            description: 'Whether to enable system debugging.',
+                            description: 'Whether to enable system debugging. Set to true to debug system-level code and framework calls.',
                             optional: true
                         },
                         deactivated: {
                             type: 'boolean',
-                            description: 'Whether to deactivate the breakpoints.',
+                            description: 'Whether to create the breakpoints in deactivated state. Set to true to define breakpoints without immediately activating them.',
                             optional: true
                         },
                         syncScupeUrl: {
                             type: 'string',
-                            description: 'The URL for scope synchronization.',
+                            description: 'The URL for scope synchronization when working with distributed debugging scenarios.',
                             optional: true
                         }
                     },
@@ -245,13 +245,13 @@ export class DebugHandlers extends BaseHandler {
             },
             {
                 name: 'debuggerVariables',
-                description: 'Retrieves debugger variables.',
+                description: 'Retrieves variable values and information during debugging sessions. This shows the current values of variables, their types, and structure at the point where execution is paused. Essential for understanding program state and troubleshooting issues.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         parents: {
                             type: 'array',
-                            description: 'An array of parent variable names.'
+                            description: 'An array of parent variable names to get variables for. Use empty array to get top-level variables, or specify parent structure/table names to get child variables.'
                         }
                     },
                     required: ['parents']
@@ -273,17 +273,17 @@ export class DebugHandlers extends BaseHandler {
             },
             {
                 name: 'debuggerStep',
-                description: 'Performs a debugger step.',
+                description: 'Performs a debugging step operation when execution is paused at a breakpoint. This controls program execution flow during debugging, allowing developers to step through code line by line, step into method calls, or continue execution to specific points.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         steptype: {
                             type: 'string',
-                            description: 'The type of step to perform.'
+                            description: 'The type of step to perform. Examples: "stepInto" (step into method calls), "stepOver" (step over method calls), "stepOut" (step out of current method), "stepContinue" (continue execution), "stepRunToLine" (run to specific line), "stepJumpToLine" (jump to specific line).'
                         },
                         url: {
                             type: 'string',
-                            description: 'The URL for step types "stepRunToLine" or "stepJumpToLine".',
+                            description: 'The URL for step types "stepRunToLine" or "stepJumpToLine". This should be the ADT URL of the target line where execution should continue or jump to.',
                             optional: true
                         }
                     },

@@ -8,17 +8,17 @@ export class RefactorHandlers extends BaseHandler {
         return [
             {
                 name: 'extractMethodEvaluate',
-                description: 'Evaluates an extract method refactoring.',
+                description: 'Evaluates the feasibility of an extract method refactoring operation. This analyzes the selected code range to determine if it can be safely extracted into a separate method, identifying potential issues like variable dependencies, control flow problems, or semantic conflicts. Returns a proposal with analysis results and recommended method signature.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         uri: {
                             type: 'string',
-                            description: 'The URI of the object.'
+                            description: 'The URI of the ABAP object containing the code to extract. Examples: "/sap/bc/adt/oo/classes/zcl_customer_service", "/sap/bc/adt/programs/zsales_report". Use complete ADT object URIs.'
                         },
                         range: {
                             type: 'string',
-                            description: 'The range to extract.'
+                            description: 'The range specification defining the code block to extract. Format: "startLine:startColumn-endLine:endColumn". Examples: "15:5-25:10", "100:1-150:45". Use zero-based line/column indexing.'
                         }
                     },
                     required: ['uri', 'range']
@@ -26,13 +26,13 @@ export class RefactorHandlers extends BaseHandler {
             },
             {
                 name: 'extractMethodPreview',
-                description: 'Previews an extract method refactoring.',
+                description: 'Previews the changes that will be made by an extract method refactoring. Shows the original code, the extracted method, and the method call that will replace the original code. This allows you to review the refactoring before applying it, ensuring the changes are correct and desirable.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         proposal: {
                             type: 'string',
-                            description: 'The extract method proposal.'
+                            description: 'The extract method proposal object returned by extractMethodEvaluate. This contains the analysis results, proposed method signature, and refactoring parameters needed to generate the preview.'
                         }
                     },
                     required: ['proposal']
@@ -40,13 +40,13 @@ export class RefactorHandlers extends BaseHandler {
             },
             {
                 name: 'extractMethodExecute',
-                description: 'Executes an extract method refactoring.',
+                description: 'Executes the extract method refactoring, applying the changes to the source code. This creates a new method with the extracted code and replaces the original code with a method call. The operation is atomic - either all changes are applied successfully or none are applied.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         refactoring: {
                             type: 'string',
-                            description: 'The refactoring object.'
+                            description: 'The refactoring object containing the finalized parameters for the extract method operation. This should be obtained from the preview step and may include user modifications to the proposed method name or signature.'
                         }
                     },
                     required: ['refactoring']

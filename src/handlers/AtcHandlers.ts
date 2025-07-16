@@ -9,158 +9,168 @@ export class AtcHandlers extends BaseHandler {
         return [
             {
                 name: 'atcCustomizing',
-                description: 'Retrieves ATC customizing information.',
+                description: 'Retrieves ATC (ABAP Test Cockpit) customizing information and configuration settings. This returns the configured check variants, system-wide ATC settings, and available analysis options. Essential for determining which ATC variant to use for code quality checks.',
                 inputSchema: {
                     type: 'object',
-                    properties: {}
+                    properties: {},
+                    additionalProperties: false
                 }
             },
             {
                 name: 'atcCheckVariant',
-                description: 'Retrieves information about an ATC check variant.',
+                description: 'Retrieves detailed information about a specific ATC check variant. Returns the configuration of checks, their priorities, and settings. The variant name can be obtained from atcCustomizing() by looking for the "systemCheckVariant" property.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         variant: {
                             type: 'string',
-                            description: 'The name of the ATC check variant.'
+                            description: 'The name of the ATC check variant (e.g., "DEFAULT", "EXTENDED"). Use atcCustomizing() to find available variants.'
                         }
                     },
-                    required: ['variant']
+                    required: ['variant'],
+                    additionalProperties: false
                 }
             },
             {
                 name: 'createAtcRun',
-                description: 'Creates an ATC run.',
+                description: 'Creates and executes an ATC (ABAP Test Cockpit) run to analyze code quality. Returns a run ID that can be used to retrieve findings with atcWorklists(). This is the main entry point for running code quality checks.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         variant: {
                             type: 'string',
-                            description: 'The name of the ATC check variant.'
+                            description: 'The ATC check variant to use (obtain from atcCheckVariant). Example: "DEFAULT"'
                         },
                         mainUrl: {
                             type: 'string',
-                            description: 'The main URL for the ATC run.'
+                            description: 'The URL of the ABAP object to analyze. Example: "/sap/bc/adt/oo/classes/zcl_my_class/source/main"'
                         },
                         maxResults: {
                             type: 'number',
-                            description: 'The maximum number of results to retrieve.',
+                            description: 'Maximum number of findings to return. Default is system-defined limit.',
                             optional: true
                         }
                     },
-                    required: ['variant', 'mainUrl']
+                    required: ['variant', 'mainUrl'],
+                    additionalProperties: false
                 }
             },
             {
                 name: 'atcWorklists',
-                description: 'Retrieves ATC worklists.',
+                description: 'Retrieves ATC findings (worklists) from a completed ATC run. Returns all code quality issues found during the analysis, including their severity, location, and exemption status. This is typically called after createAtcRun() to get the actual findings.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         runResultId: {
                             type: 'string',
-                            description: 'The ID of the ATC run result.'
+                            description: 'The ID returned from createAtcRun(). This identifies which ATC run to retrieve findings from.'
                         },
                         timestamp: {
                             type: 'number',
-                            description: 'The timestamp.',
+                            description: 'Filter findings by timestamp (Unix timestamp). Use run.timestamp from createAtcRun() result.',
                             optional: true
                         },
                         usedObjectSet: {
                             type: 'string',
-                            description: 'The used object set.',
+                            description: 'Object set filter (e.g., "LAST_RUN"). Can be obtained from previous atcWorklists() call.',
                             optional: true
                         },
                         includeExempted: {
                             type: 'boolean',
-                            description: 'Whether to include exempted findings.',
+                            description: 'Whether to include findings that have been exempted/suppressed. Default: false',
                             optional: true
                         }
                     },
-                    required: ['runResultId']
+                    required: ['runResultId'],
+                    additionalProperties: false
                 }
             },
             {
                 name: 'atcUsers',
-                description: 'Retrieves a list of ATC users.',
+                description: 'Retrieves a list of users who can approve ATC exemptions. These users have the necessary authorizations to approve exemption requests for ATC findings.',
                 inputSchema: {
                     type: 'object',
-                    properties: {}
+                    properties: {},
+                    additionalProperties: false
                 }
             },
             {
                 name: 'atcExemptProposal',
-                description: 'Retrieves an ATC exemption proposal.',
+                description: 'Retrieves an ATC exemption proposal template for a specific finding. This returns a pre-filled exemption request that can be modified and submitted via atcRequestExemption(). Use this to suppress specific ATC findings that are intentional or false positives.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         markerId: {
                             type: 'string',
-                            description: 'The ID of the marker.'
+                            description: 'The marker ID (quickfixInfo) from an ATC finding obtained via atcWorklists().'
                         }
                     },
-                    required: ['markerId']
+                    required: ['markerId'],
+                    additionalProperties: false
                 }
             },
             {
                 name: 'atcRequestExemption',
-                description: 'Requests an ATC exemption.',
+                description: 'Submits an ATC exemption request to suppress a specific finding. The proposal must be obtained from atcExemptProposal() and modified with justification, reason, and approver information. This creates a formal request to exclude the finding from future ATC runs.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         proposal: {
                             type: 'object',
-                            description: 'The ATC exemption proposal.'
+                            description: 'The ATC exemption proposal from atcExemptProposal(), modified with justification, reason ("FPOS", "OTHR", etc.), and approver information.'
                         }
                     },
-                    required: ['proposal']
+                    required: ['proposal'],
+                    additionalProperties: false
                 }
             },
             {
                 name: 'isProposalMessage',
-                description: 'Checks if a given object is a proposal message.',
+                description: 'Checks if the response from atcExemptProposal() is an error message rather than a valid exemption proposal. Returns true if the proposal contains an error message (e.g., finding already exempted), false if it\'s a valid proposal that can be submitted.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         proposal: {
                             type: 'object',
-                            description: 'The ATC exemption proposal.'
+                            description: 'The response object from atcExemptProposal() to check for error messages.'
                         }
                     },
-                    required: ['proposal']
+                    required: ['proposal'],
+                    additionalProperties: false
                 }
             },
             {
                 name: 'atcContactUri',
-                description: 'Retrieves the contact URI for an ATC finding.',
+                description: 'Retrieves the contact URI for an ATC finding, which can be used to change the responsible person for the finding via atcChangeContact(). This is useful for assigning ownership of findings to specific developers.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         findingUri: {
                             type: 'string',
-                            description: 'The URI of the ATC finding.'
+                            description: 'The URI of the ATC finding obtained from atcWorklists() result (finding.uri property).'
                         }
                     },
-                    required: ['findingUri']
+                    required: ['findingUri'],
+                    additionalProperties: false
                 }
             },
             {
                 name: 'atcChangeContact',
-                description: 'Changes the contact for an ATC finding.',
+                description: 'Changes the responsible person (contact) for an ATC finding. This assigns ownership of the finding to a specific user, useful for distributing responsibility for resolving code quality issues among team members.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         itemUri: {
                             type: 'string',
-                            description: 'The URI of the item.'
+                            description: 'The contact URI obtained from atcContactUri() for the specific finding.'
                         },
                         userId: {
                             type: 'string',
-                            description: 'The ID of the user.'
+                            description: 'The SAP user ID of the person to assign as responsible for this finding.'
                         }
                     },
-                    required: ['itemUri', 'userId']
+                    required: ['itemUri', 'userId'],
+                    additionalProperties: false
                 }
             }
         ];

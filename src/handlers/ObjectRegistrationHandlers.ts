@@ -7,39 +7,68 @@ export class ObjectRegistrationHandlers extends BaseHandler {
     return [
       {
         name: 'objectRegistrationInfo',
-        description: 'Get registration information for an ABAP object',
+        description: 'Retrieves registration information for an ABAP object including its metadata, owner, package assignment, and transport details. This provides comprehensive information about the object registration status, which is essential for understanding object lifecycle and dependencies.',
         inputSchema: {
           type: 'object',
           properties: {
-            objectUrl: { type: 'string' }
+            objectUrl: { 
+              type: 'string',
+              description: 'The URL of the ABAP object to get registration information for. Examples: "/sap/bc/adt/oo/classes/zcl_customer_api", "/sap/bc/adt/programs/zsales_report". Use complete ADT object URLs.'
+            }
           },
           required: ['objectUrl']
         }
       },
       {
         name: 'validateNewObject',
-        description: 'Validate parameters for a new ABAP object',
+        description: 'Validates parameters for creating a new ABAP object before actual creation. This performs validation checks including name uniqueness, naming conventions, package permissions, and transport requirements. Use this to ensure object creation will succeed before attempting to create the object.',
         inputSchema: {
           type: 'object',
           properties: {
-            options: { type: 'string' }
+            options: { 
+              type: 'string',
+              description: 'A JSON string containing the validation options including object type, name, parent package, and other creation parameters. Example: \'{"objtype": "CLAS", "name": "ZCL_NEW_CLASS", "parentName": "ZPACKAGE", "description": "New test class"}\'.'
+            }
           },
           required: ['options']
         }
       },
       {
         name: 'createObject',
-        description: 'Create a new ABAP object',
+        description: 'Creates a new ABAP object in the SAP system. This operation creates the object with the specified parameters and registers it in the repository. The object is created in inactive state and needs to be activated after creation. Requires appropriate authorization and transport handling.',
         inputSchema: {
           type: 'object',
           properties: {
-            objtype: { type: 'string' },
-            name: { type: 'string' },
-            parentName: { type: 'string' },
-            description: { type: 'string' },
-            parentPath: { type: 'string' },
-            responsible: { type: 'string', optional: true },
-            transport: { type: 'string', optional: true }
+            objtype: { 
+              type: 'string',
+              description: 'The type of ABAP object to create. Examples: "CLAS" for classes, "PROG" for programs, "FUGR" for function groups, "DDLS" for CDS views, "INTF" for interfaces, "DEVC" for packages.'
+            },
+            name: { 
+              type: 'string',
+              description: 'The name of the new object. Must follow ABAP naming conventions and be unique within the system. Examples: "ZCL_CUSTOMER_API", "ZSALES_REPORT", "ZFG_UTILITIES".'
+            },
+            parentName: { 
+              type: 'string',
+              description: 'The name of the parent package where the object will be created. Examples: "ZPACKAGE", "ZFIN_PACKAGE", "$TMP" for temporary objects.'
+            },
+            description: { 
+              type: 'string',
+              description: 'A descriptive text for the object that explains its purpose. Examples: "Customer API for external integrations", "Sales report for monthly analysis".'
+            },
+            parentPath: { 
+              type: 'string',
+              description: 'The path to the parent package in the repository tree. Examples: "/sap/bc/adt/packages/zpackage", "/sap/bc/adt/packages/$tmp".'
+            },
+            responsible: { 
+              type: 'string',
+              description: 'The user ID responsible for the object. Usually the current user. Examples: "DEVELOPER", "JOHN.DOE". Leave empty to use current user.',
+              optional: true
+            },
+            transport: { 
+              type: 'string',
+              description: 'The transport request number to record the object creation. Required for transportable objects. Examples: "DEVK900001", "DEVK900123". Leave empty for local objects.',
+              optional: true
+            }
           },
           required: ['objtype', 'name', 'parentName', 'description', 'parentPath']
         }

@@ -8,17 +8,17 @@ export class RevisionHandlers extends BaseHandler {
         return [
             {
                 name: 'revisions',
-                description: 'Retrieves revisions for an object.',
+                description: 'Retrieves the revision history for an ABAP object. This returns a chronological list of all changes made to the object including timestamps, author information, change descriptions, and version details. Essential for understanding object evolution, tracking changes, and performing version comparisons. Can be used for audit trails and change analysis.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         objectUrl: {
                             type: 'string',
-                            description: 'The URL of the object.'
+                            description: 'The URL of the ABAP object to get revisions for. Examples: "/sap/bc/adt/oo/classes/zcl_customer_api", "/sap/bc/adt/programs/zsales_report", "/sap/bc/adt/functions/groups/zfg_utilities". Use complete ADT object URLs.'
                         },
                         clsInclude: {
                             type: 'string',
-                            description: 'The class include.',
+                            description: 'For class objects, specify the class include to get revisions for a specific part of the class. Examples: "definitions", "implementations", "testclasses", "locals_def", "locals_imp". Leave empty to get revisions for the entire class.',
                             optional: true
                         }
                     },

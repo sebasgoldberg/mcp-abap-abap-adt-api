@@ -7,13 +7,13 @@ export class DiscoveryHandlers extends BaseHandler {
         return [
             {
                 name: 'featureDetails',
-                description: 'Retrieves details for a given feature.',
+                description: 'Retrieves detailed information about a specific ADT feature. This returns comprehensive metadata about the feature including its capabilities, configuration options, and usage requirements. Use this to understand what functionality is available and how to use specific ADT features.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         title: {
                             type: 'string',
-                            description: 'The title of the feature.'
+                            description: 'The title of the feature to get details for. Examples: "ABAP_EDITOR", "DDIC_ACTIVATION", "TRANSPORT_MANAGEMENT". Use the exact feature name as exposed by the ADT discovery services.'
                         }
                     },
                     required: ['title']
@@ -21,13 +21,13 @@ export class DiscoveryHandlers extends BaseHandler {
             },
             {
                 name: 'collectionFeatureDetails',
-                description: 'Retrieves details for a given collection feature.',
+                description: 'Retrieves detailed information about a collection feature from ADT. Collection features are groups of related functionality that are exposed as collections in the ADT API. This provides metadata about the collection including available operations, supported types, and configuration.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         url: {
                             type: 'string',
-                            description: 'The URL of the collection feature.'
+                            description: 'The URL of the collection feature to get details for. Examples: "/sap/bc/adt/repository/collections/classes", "/sap/bc/adt/repository/collections/programs". Use URLs obtained from discovery services.'
                         }
                     },
                     required: ['url']
@@ -35,13 +35,13 @@ export class DiscoveryHandlers extends BaseHandler {
             },
             {
                 name: 'findCollectionByUrl',
-                description: 'Finds a collection by its URL.',
+                description: 'Finds and retrieves a collection by its URL. Collections in ADT represent groups of related objects or functionality. This tool helps locate specific collections and understand their structure and contents.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         url: {
                             type: 'string',
-                            description: 'The URL of the collection.'
+                            description: 'The URL of the collection to find. Examples: "/sap/bc/adt/repository/collections/ddic", "/sap/bc/adt/repository/collections/transports". Use complete ADT URLs.'
                         }
                     },
                     required: ['url']
@@ -49,7 +49,7 @@ export class DiscoveryHandlers extends BaseHandler {
             },
             {
                 name: 'loadTypes',
-                description: 'Loads object types.',
+                description: 'Loads and retrieves all available object types in the ADT system. This returns a comprehensive list of ABAP object types that can be created, modified, or accessed through ADT including classes, programs, includes, function groups, and DDIC objects. Essential for understanding what types of objects are available.',
                 inputSchema: {
                     type: 'object',
                     properties: {}
@@ -57,7 +57,7 @@ export class DiscoveryHandlers extends BaseHandler {
             },
             {
                 name: 'adtDiscovery',
-                description: 'Performs ADT discovery.',
+                description: 'Performs ADT discovery to retrieve available services and capabilities. This returns information about all ADT services, their endpoints, supported operations, and feature availability. Use this to understand what ADT functionality is available in the connected SAP system.',
                 inputSchema: {
                     type: 'object',
                     properties: {}
@@ -65,7 +65,7 @@ export class DiscoveryHandlers extends BaseHandler {
             },
             {
                 name: 'adtCoreDiscovery',
-                description: 'Performs ADT core discovery.',
+                description: 'Performs ADT core discovery to retrieve fundamental ADT services and capabilities. This focuses on core ADT functionality including basic object operations, repository services, and essential development tools. More focused than full ADT discovery.',
                 inputSchema: {
                     type: 'object',
                     properties: {}
@@ -73,7 +73,7 @@ export class DiscoveryHandlers extends BaseHandler {
             },
             {
                 name: 'adtCompatibiliyGraph',
-                description: 'Retrieves the ADT compatibility graph.',
+                description: 'Retrieves the ADT compatibility graph which shows version compatibility information between different ADT components and the SAP system. This helps understand which ADT features are available and supported in the current system version.',
                 inputSchema: {
                     type: 'object',
                     properties: {}

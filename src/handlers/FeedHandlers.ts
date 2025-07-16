@@ -8,7 +8,7 @@ export class FeedHandlers extends BaseHandler {
         return [
             {
                 name: 'feeds',
-                description: 'Retrieves a list of feeds.',
+                description: 'Retrieves a list of system feeds and notifications from the SAP system. This includes system messages, alerts, and various feed sources that provide real-time information about system status, events, and notifications. Useful for monitoring system health and getting updates about system activities.',
                 inputSchema: {
                     type: 'object',
                     properties: {}
@@ -16,13 +16,13 @@ export class FeedHandlers extends BaseHandler {
             },
             {
                 name: 'dumps',
-                description: 'Retrieves a list of dumps.',
+                description: 'Retrieves a list of ABAP runtime dumps (short dumps) from the SAP system. Short dumps contain detailed information about runtime errors, including error messages, call stack, variable values, and system state at the time of the error. Essential for debugging runtime issues and understanding error patterns in the system.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         query: {
                             type: 'string',
-                            description: 'An optional query string to filter the dumps.',
+                            description: 'An optional query string to filter the dumps. Can be used to search for specific dump types, error messages, or programs. Examples: "ABAP_EXCEPTION", "ZSALES_REPORT", "RUNTIME_ERROR_*". Leave empty to get all recent dumps.',
                             optional: true
                         }
                     }

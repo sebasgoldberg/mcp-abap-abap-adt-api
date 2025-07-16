@@ -8,13 +8,13 @@ export class TraceHandlers extends BaseHandler {
         return [
             {
                 name: 'tracesList',
-                description: 'Retrieves a list of traces.',
+                description: 'Retrieves a list of available traces in the SAP system. Traces are used for performance analysis, debugging, and monitoring ABAP program execution. This returns information about existing traces including their status, creation time, and associated programs.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         user: {
                             type: 'string',
-                            description: 'The user.',
+                            description: 'Filter traces by a specific user. Leave empty to get traces for all users (if authorized). Examples: "DEVELOPER", "JOHN.DOE".',
                             optional: true
                         }
                     }
@@ -22,13 +22,13 @@ export class TraceHandlers extends BaseHandler {
             },
             {
                 name: 'tracesListRequests',
-                description: 'Retrieves a list of trace requests.',
+                description: 'Retrieves a list of trace requests that have been submitted to the system. Trace requests are pending or scheduled traces that may not have been executed yet. This helps monitor the trace queue and understand trace processing status.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         user: {
                             type: 'string',
-                            description: 'The user.',
+                            description: 'Filter trace requests by a specific user. Leave empty to get requests for all users (if authorized). Examples: "DEVELOPER", "JOHN.DOE".',
                             optional: true
                         }
                     }
@@ -36,17 +36,17 @@ export class TraceHandlers extends BaseHandler {
             },
             {
                 name: 'tracesHitList',
-                description: 'Retrieves the hit list for a trace.',
+                description: 'Retrieves the hit list for a specific trace, showing which ABAP statements or programs were executed during the trace. This provides a summary of trace results including execution counts, timing information, and program flow analysis.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         id: {
                             type: 'string',
-                            description: 'The ID of the trace.'
+                            description: 'The unique identifier of the trace to get hit list for. This ID is obtained from tracesList or trace creation operations.'
                         },
                         withSystemEvents: {
                             type: 'boolean',
-                            description: 'Whether to include system events.',
+                            description: 'Whether to include system events in the hit list. Set to true to get detailed system-level information including database operations and system calls.',
                             optional: true
                         }
                     },
@@ -55,17 +55,17 @@ export class TraceHandlers extends BaseHandler {
             },
             {
                 name: 'tracesDbAccess',
-                description: 'Retrieves database access information for a trace.',
+                description: 'Retrieves database access information for a specific trace. This shows all database operations performed during the trace including SQL statements, table access patterns, and performance metrics. Essential for database performance analysis.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         id: {
                             type: 'string',
-                            description: 'The ID of the trace.'
+                            description: 'The unique identifier of the trace to get database access information for. This ID is obtained from tracesList or trace creation operations.'
                         },
                         withSystemEvents: {
                             type: 'boolean',
-                            description: 'Whether to include system events.',
+                            description: 'Whether to include system events in the database access report. Set to true to get comprehensive database interaction details.',
                             optional: true
                         }
                     },
@@ -74,17 +74,17 @@ export class TraceHandlers extends BaseHandler {
             },
             {
                 name: 'tracesStatements',
-                description: 'Retrieves statements for a trace.',
+                description: 'Retrieves detailed statement information for a specific trace. This provides comprehensive information about individual ABAP statements executed during the trace including execution times, parameters, and context information.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         id: {
                             type: 'string',
-                            description: 'The ID of the trace.'
+                            description: 'The unique identifier of the trace to get statements for. This ID is obtained from tracesList or trace creation operations.'
                         },
                         options: {
                             type: 'string',
-                            description: 'Options for retrieving statements.',
+                            description: 'Additional options for retrieving statements. This can include formatting options, filtering criteria, or aggregation settings. Use JSON format for complex options.',
                             optional: true
                         }
                     },
@@ -93,13 +93,13 @@ export class TraceHandlers extends BaseHandler {
             },
             {
                 name: 'tracesSetParameters',
-                description: 'Sets trace parameters.',
+                description: 'Sets global trace parameters that control how traces are collected and processed. These parameters affect trace behavior including collection scope, performance settings, and data retention policies.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         parameters: {
                             type: 'string',
-                            description: 'The trace parameters.'
+                            description: 'The trace parameters as a JSON string. This should include settings like trace level, collection scope, performance thresholds, and retention settings. Example: \'{"level": "HIGH", "scope": "ALL", "retention": "7_DAYS"}\'.'
                         }
                     },
                     required: ['parameters']
@@ -107,13 +107,13 @@ export class TraceHandlers extends BaseHandler {
             },
             {
                 name: 'tracesCreateConfiguration',
-                description: 'Creates a trace configuration.',
+                description: 'Creates a new trace configuration that defines how traces should be collected for specific programs or scenarios. Trace configurations can be reused and shared across different trace sessions.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         config: {
                             type: 'string',
-                            description: 'The trace configuration.'
+                            description: 'The trace configuration as a JSON string. This should include configuration name, target programs, collection settings, and filters. Example: \'{"name": "DB_TRACE_CONFIG", "programs": ["ZSALES*"], "collect_db": true, "collect_performance": true}\'.'
                         }
                     },
                     required: ['config']
@@ -121,13 +121,13 @@ export class TraceHandlers extends BaseHandler {
             },
             {
                 name: 'tracesDeleteConfiguration',
-                description: 'Deletes a trace configuration.',
+                description: 'Deletes an existing trace configuration. This removes the configuration from the system and makes it unavailable for future trace sessions. Use with caution as this operation cannot be undone.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         id: {
                             type: 'string',
-                            description: 'The ID of the trace configuration.'
+                            description: 'The unique identifier of the trace configuration to delete. This ID is obtained from configuration creation or listing operations.'
                         }
                     },
                     required: ['id']
@@ -135,13 +135,13 @@ export class TraceHandlers extends BaseHandler {
             },
             {
                 name: 'tracesDelete',
-                description: 'Deletes a trace.',
+                description: 'Deletes a specific trace and all its associated data. This permanently removes the trace results from the system including hit lists, database access information, and statement details. Use with caution as this operation cannot be undone.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         id: {
                             type: 'string',
-                            description: 'The ID of the trace.'
+                            description: 'The unique identifier of the trace to delete. This ID is obtained from tracesList or trace creation operations.'
                         }
                     },
                     required: ['id']

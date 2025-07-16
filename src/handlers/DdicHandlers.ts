@@ -8,7 +8,7 @@ export class DdicHandlers extends BaseHandler {
         return [
             {
                 name: 'annotationDefinitions',
-                description: 'Retrieves annotation definitions.',
+                description: 'Retrieves annotation definitions used in CDS views and other ABAP objects. Returns a list of available annotations with their definitions, parameters, and usage contexts. This is useful for understanding the annotation framework and building CDS views with proper annotations.',
                 inputSchema: {
                     type: 'object',
                     properties: {}
@@ -16,27 +16,27 @@ export class DdicHandlers extends BaseHandler {
             },
             {
                 name: 'ddicElement',
-                description: 'Retrieves information about a DDIC element.',
+                description: 'Retrieves detailed information about a DDIC (ABAP Dictionary) element such as tables, views, structures, data elements, domains, and types. Returns comprehensive metadata including field definitions, data types, constraints, associations, and relationships. Essential for understanding database structures and building type-safe ABAP code.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         path: {
                             type: 'string',
-                            description: 'The path to the DDIC element.'
+                            description: 'The path to the DDIC element. Examples: "/sap/bc/adt/ddic/tables/mara", "/sap/bc/adt/ddic/structures/bapiret2", "/sap/bc/adt/ddic/dataelements/matnr". Use searchObject to find the correct path.'
                         },
                         getTargetForAssociation: {
                             type: 'boolean',
-                            description: 'Whether to get the target for association.',
+                            description: 'Whether to retrieve target information for associations in CDS views. Set to true when analyzing CDS associations and their target entities.',
                             optional: true
                         },
                         getExtensionViews: {
                             type: 'boolean',
-                            description: 'Whether to get extension views.',
+                            description: 'Whether to retrieve extension views information. Set to true when working with extensible CDS views to understand available extension points.',
                             optional: true
                         },
                         getSecondaryObjects: {
                             type: 'boolean',
-                            description: 'Whether to get secondary objects.',
+                            description: 'Whether to retrieve secondary objects related to the main DDIC element. Set to true to get complete dependency information.',
                             optional: true
                         }
                     },
@@ -45,13 +45,13 @@ export class DdicHandlers extends BaseHandler {
             },
             {
                 name: 'ddicRepositoryAccess',
-                description: 'Accesses the DDIC repository.',
+                description: 'Accesses the DDIC repository to retrieve basic information about a DDIC element. This is a lighter version of ddicElement that returns essential metadata without extended details. Use this when you need quick access to DDIC element information without full relationship data.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         path: {
                             type: 'string',
-                            description: 'The path to the DDIC element.'
+                            description: 'The path to the DDIC element. Examples: "/sap/bc/adt/ddic/tables/vbak", "/sap/bc/adt/ddic/views/dd03l". Use searchObject to find the correct path.'
                         }
                     },
                     required: ['path']
@@ -59,17 +59,17 @@ export class DdicHandlers extends BaseHandler {
             },
             {
                 name: 'packageSearchHelp',
-                description: 'Performs a package search help.',
+                description: 'Performs a search help for packages in the SAP system. Returns a list of packages matching the search criteria, useful for finding development packages, understanding package hierarchies, and organizing ABAP objects. Essential for transport management and development structure analysis.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         type: {
                             type: 'string',
-                            description: 'The package value help type.'
+                            description: 'The package value help type. Common values include "DEVCLASS" for development classes, "PACKAGE" for packages. This determines the scope and type of package search to perform.'
                         },
                         name: {
                             type: 'string',
-                            description: 'The package name.',
+                            description: 'The package name pattern to search for. Supports wildcards (*). Examples: "Z*", "ZFIN*", "ZTEST". Leave empty to get all packages of the specified type.',
                             optional: true
                         }
                     },
