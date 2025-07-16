@@ -48,17 +48,40 @@ export class CodeAnalysisHandlers extends BaseHandler {
             },
             {
                 name: 'findDefinition',
-                description: 'Find symbol definition',
+                description: 'Find symbol definition. Use this to navigate to the definition of ABAP symbols like types, variables, methods, functions, forms, and classes. IMPORTANT USAGE NOTES: 1) The url parameter must include /source/main suffix (e.g., /sap/bc/adt/oo/classes/zcl_class/source/main). 2) The source parameter must contain the complete ABAP source code. 3) The line parameter is 1-based (first line = 1). 4) The startCol and endCol parameters are 0-based and define the exact character positions of the symbol you want to find the definition for - these must precisely match the symbol boundaries.',
                 inputSchema: {
                     type: 'object',
                     properties: {
-                        url: { type: 'string' },
-                        source: { type: 'string' },
-                        line: { type: 'number' },
-                        startCol: { type: 'number' },
-                        endCol: { type: 'number' },
-                        implementation: { type: 'boolean', optional: true },
-                        mainProgram: { type: 'string', optional: true }
+                        url: { 
+                            type: 'string',
+                            description: 'URL of the ABAP object with /source/main suffix (e.g., /sap/bc/adt/oo/classes/zcl_class/source/main)'
+                        },
+                        source: { 
+                            type: 'string',
+                            description: 'Complete ABAP source code of the object'
+                        },
+                        line: { 
+                            type: 'number',
+                            description: 'Line number where the symbol is located (1-based)'
+                        },
+                        startCol: { 
+                            type: 'number',
+                            description: 'Starting column position of the symbol (0-based)'
+                        },
+                        endCol: { 
+                            type: 'number',
+                            description: 'Ending column position of the symbol (0-based)'
+                        },
+                        implementation: { 
+                            type: 'boolean', 
+                            optional: true,
+                            description: 'For methods: true to navigate to implementation, false to navigate to declaration/signature (default: false)'
+                        },
+                        mainProgram: { 
+                            type: 'string', 
+                            optional: true,
+                            description: 'Main program context when working with includes'
+                        }
                     },
                     required: ['url', 'source', 'line', 'startCol', 'endCol']
                 }
