@@ -153,6 +153,11 @@ This server provides tools for interacting with an SAP system via ADT (ABAP Deve
     *   `discardLines`: (number, optional) Lines to be discarded from the begining.
     *   `maxLines`: (number, optional) maximum number of lines to be retrieved (try with 800 lines but if it does not work, keep reducing by 100 lines until it works).
 
+A usefull source of information to consider in how to use, are in the files inside this repository folder: 
+*   ** https://github.com/marcellourbani/abap-adt-api/tree/master/src/test
+In the folder above are defined the tests of the package dependency abap-adt-api, that handles the ADT communication.
+This tests can be considered as orientations on usage of the tools provided by this MCP server.
+
 **Workflow for Modifying ABAP Code:**
 
 1.  **Find the object URI:** Use `searchObject`.
@@ -162,8 +167,8 @@ This server provides tools for interacting with an SAP system via ADT (ABAP Deve
 5.  **Lock the object:** Use `lock`.
 6.  **Set the modified source code:** Use `setObjectSource` (with the `/source/main` suffix).
 7.  **Perform a syntax check:** Use `syntaxCheckCode`.
-8.  **Activate** the object, Use `activate`..
-9.  **unLock the object:** Use `unLock`.
+8.  **unLock the object:** Use `unLock`.
+9.  **Activate** the object, Use `activate`..
 
 **Important Notes:**
 *   **File Handling:** SAP is completly de-coupled from the local file system. Reading source code will only return the code as tool result - it has no effect on file. Files are not synchronized with SAP but merely a local copy for our reference. FYI: It's not strictly necessary for you to create local copies of source codes, as they have no effect on SAP, but it helps us track changes. 
@@ -225,3 +230,18 @@ Contributions are welcome! Please follow these steps to contribute:
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+## ABAP Server ADT considerations regarding stateful mode handler.
+
+In some ABAP Servers, the default mode is stateless.
+
+    ```ABAP
+    " default HTTP handler is stateless
+    IF gv_stateful = abap_true.
+      server->set_session_stateful( stateful = if_http_server=>co_enabled ).
+    ELSE.
+      server->set_session_stateful( stateful = if_http_server=>co_disabled ).
+    ENDIF.
+    ```
+
+the code above is defined in class CL_REST_HTTP_HANDLER.

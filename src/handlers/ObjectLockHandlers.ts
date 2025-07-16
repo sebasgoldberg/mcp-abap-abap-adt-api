@@ -7,17 +7,17 @@ export class ObjectLockHandlers extends BaseHandler {
   getTools(): ToolDefinition[] {
     return [{
       name: 'lock',
-      description: 'Lock an object',
+      description: 'Lock an ABAP object for editing. REQUIRES stateful session (set stateful=true). Returns lock handle that must be used for setObjectSource and unLock operations. Objects must be locked before modification. Example: lock("/sap/bc/adt/programs/programs/ztest") returns {LOCK_HANDLE: "..."}',
       inputSchema: {
         type: 'object',
         properties: {
           objectUrl: { 
             type: 'string',
-            description: 'URL of the object to lock'
+            description: 'URL of the object to lock. Do NOT include "/source/main" suffix here. Examples: "/sap/bc/adt/programs/programs/ztest", "/sap/bc/adt/oo/classes/zcl_example", "/sap/bc/adt/ddic/tables/ztable"'
           },
           accessMode: { 
             type: 'string',
-            description: 'Access mode for the lock',
+            description: 'Access mode for the lock. Usually not needed (defaults to MODIFY). Examples: "MODIFY", "READ"',
             optional: true 
           }
         },
@@ -25,17 +25,17 @@ export class ObjectLockHandlers extends BaseHandler {
       }
     }, {
       name: 'unLock',
-      description: 'Unlock an object',
+      description: 'Unlock a previously locked ABAP object. MUST be called after object modification is complete. Always use with dropSession() to clean up properly. Example: unLock("/sap/bc/adt/programs/programs/ztest", "LOCK_HANDLE_123")',
       inputSchema: {
         type: 'object',
         properties: {
           objectUrl: { 
             type: 'string',
-            description: 'URL of the object to unlock'
+            description: 'URL of the object to unlock. Must be exactly the same URL used in lock operation. Examples: "/sap/bc/adt/programs/programs/ztest", "/sap/bc/adt/oo/classes/zcl_example"'
           },
           lockHandle: { 
             type: 'string',
-            description: 'Lock handle obtained from previous lock operation'
+            description: 'Lock handle obtained from previous lock operation. Format: "LOCK_HANDLE" property from lock response. REQUIRED - must match the handle returned by lock.'
           }
         },
         required: ['objectUrl', 'lockHandle']

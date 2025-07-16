@@ -7,28 +7,55 @@ export class ObjectSourceHandlers extends BaseHandler {
     return [
       {
         name: 'getObjectSource',
-        description: 'Retrieves source code for ABAP objects',
+        description: 'Retrieves source code for ABAP objects. Returns the complete source code as string. Supports pagination for large objects. IMPORTANT: Always use "/source/main" suffix for the URL. Example: getObjectSource("/sap/bc/adt/programs/programs/ztest/source/main")',
         inputSchema: {
           type: 'object',
           properties: {
-            objectSourceUrl: { type: 'string' },
-            discardLines: { type: 'number', optional: true },
-            maxLines: { type: 'number', optional: true },
-            options: { type: 'string' }
+            objectSourceUrl: { 
+              type: 'string',
+              description: 'URL of the object source. MUST include "/source/main" suffix. Examples: "/sap/bc/adt/programs/programs/ztest/source/main", "/sap/bc/adt/oo/classes/zcl_example/source/main"'
+            },
+            discardLines: { 
+              type: 'number', 
+              optional: true,
+              description: 'Number of lines to discard from the beginning. Used for pagination of large objects. Example: 100 to skip first 100 lines.'
+            },
+            maxLines: { 
+              type: 'number', 
+              optional: true,
+              description: 'Maximum number of lines to retrieve. Used for pagination. Example: 800 to get maximum 800 lines. If not specified, returns all lines.'
+            },
+            options: { 
+              type: 'string',
+              description: 'Additional options for source retrieval. Usually empty string.'
+            }
           },
           required: ['objectSourceUrl']
         }
       },
       {
         name: 'setObjectSource',
-        description: 'Sets source code for ABAP objects',
+        description: 'Sets source code for ABAP objects. REQUIRES object to be locked first using lock tool. IMPORTANT: Always use "/source/main" suffix for the URL. Must provide valid transport request. Example workflow: 1) lock object, 2) setObjectSource, 3) unlock object, 4) activate object.',
         inputSchema: {
           type: 'object',
           properties: {
-            objectSourceUrl: { type: 'string' },
-            source: { type: 'string' },
-            lockHandle: { type: 'string' },
-            transport: { type: 'string' }
+            objectSourceUrl: { 
+              type: 'string',
+              description: 'URL of the object source. MUST include "/source/main" suffix. Examples: "/sap/bc/adt/programs/programs/ztest/source/main", "/sap/bc/adt/oo/classes/zcl_example/source/main"'
+            },
+            source: { 
+              type: 'string',
+              description: 'Complete source code to set. Must be the full source code of the object, not just changes.'
+            },
+            lockHandle: { 
+              type: 'string',
+              description: 'Lock handle obtained from lock tool. Format: "LOCK_HANDLE" property from lock response. REQUIRED - object must be locked before setting source.'
+            },
+            transport: { 
+              type: 'string',
+              description: 'Transport request number. Format: "SYSTEMK123456" or similar. Can be obtained from transportInfo tool. Required for transportable objects.',
+              optional: true
+            }
           },
           required: ['objectSourceUrl', 'source', 'lockHandle']
         }

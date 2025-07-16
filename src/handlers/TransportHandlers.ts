@@ -8,22 +8,22 @@ export class TransportHandlers extends BaseHandler {
         return [
             {
                 name: 'transportInfo',
-                description: 'Get transport information for an object source',
+                description: 'Get transport information for an object source. Returns RECORDING status, available TRANSPORTS array, and LOCKS information if object is locked. Use this to get transport request numbers before setting object source. Example: transportInfo("/sap/bc/adt/oo/classes/zcl_test/source/main", "ZPACKAGE")',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         objSourceUrl: {
                             type: 'string',
-                            description: 'URL of the object source'
+                            description: 'URL of the object source with /source/main suffix. Examples: "/sap/bc/adt/oo/classes/zcl_test/source/main", "/sap/bc/adt/programs/programs/ztest/source/main"'
                         },
                         devClass: {
                             type: 'string',
-                            description: 'Development class',
+                            description: 'Development class (package) name. Examples: "ZPACKAGE", "ZMAIN", "$TMP" for local objects',
                             optional: true
                         },
                         operation: {
                             type: 'string',
-                            description: 'Transport operation',
+                            description: 'Transport operation type. Usually not needed for standard operations.',
                             optional: true
                         }
                     },
@@ -32,25 +32,25 @@ export class TransportHandlers extends BaseHandler {
             },
             {
                 name: 'createTransport',
-                description: 'Create a new transport request',
+                description: 'Create a new transport request for object changes. Returns transport request number that can be used for setObjectSource. Use this when no suitable transport exists. Example: createTransport("/sap/bc/adt/oo/classes/zcl_test/source/main", "Development changes", "ZPACKAGE")',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         objSourceUrl: {
                             type: 'string',
-                            description: 'URL of the object source'
+                            description: 'URL of the object source with /source/main suffix. Examples: "/sap/bc/adt/oo/classes/zcl_test/source/main"'
                         },
                         REQUEST_TEXT: {
                             type: 'string',
-                            description: 'Description of the transport request'
+                            description: 'Description of the transport request. Examples: "Bug fix for class ZCL_TEST", "New feature implementation"'
                         },
                         DEVCLASS: {
                             type: 'string',
-                            description: 'Development class'
+                            description: 'Development class (package) name. Examples: "ZPACKAGE", "ZMAIN". Cannot be "$TMP" for transport requests.'
                         },
                         transportLayer: {
                             type: 'string',
-                            description: 'Transport layer',
+                            description: 'Transport layer for the request. Usually system default is used. Examples: "SAP", "ZDEV"',
                             optional: true
                         }
                     },

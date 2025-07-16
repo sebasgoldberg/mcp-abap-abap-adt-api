@@ -8,40 +8,74 @@ export class CodeAnalysisHandlers extends BaseHandler {
         return [
             {
                 name: 'syntaxCheckCode',
-                description: 'Perform ABAP syntax check with source code',
+                description: 'Perform ABAP syntax check with source code. Returns array of syntax messages with severity (E/W/I), line numbers, and error descriptions. Use this to validate ABAP code before setting object source. Example: syntaxCheckCode("FUNCTION-POOL ztest.\\nDATA foo", "/sap/bc/adt/functions/groups/ztest", "/sap/bc/adt/functions/groups/ztest/source/main")',
                 inputSchema: {
                     type: 'object',
                     properties: {
-                        code: { type: 'string' },
-                        url: { type: 'string', optional: true },
-                        mainUrl: { type: 'string', optional: true },
-                        mainProgram: { type: 'string', optional: true },
-                        version: { type: 'string', optional: true }
+                        code: { 
+                            type: 'string',
+                            description: 'ABAP source code to check. Must be complete and valid ABAP code.'
+                        },
+                        url: { 
+                            type: 'string', 
+                            optional: true,
+                            description: 'URL of the object (without /source/main). Examples: "/sap/bc/adt/functions/groups/ztest", "/sap/bc/adt/programs/programs/ztest"'
+                        },
+                        mainUrl: { 
+                            type: 'string', 
+                            optional: true,
+                            description: 'Main URL with /source/main suffix. Examples: "/sap/bc/adt/functions/groups/ztest/source/main"'
+                        },
+                        mainProgram: { 
+                            type: 'string', 
+                            optional: true,
+                            description: 'Main program context for includes. Examples: "/sap/bc/adt/programs/programs/zmain"'
+                        },
+                        version: { 
+                            type: 'string', 
+                            optional: true,
+                            description: 'Version context for syntax check. Usually not needed.'
+                        }
                     },
                     required: ['code']
                 }
             },
             {
                 name: 'syntaxCheckCdsUrl',
-                description: 'Perform ABAP syntax check with CDS URL',
+                description: 'Perform ABAP syntax check for CDS objects (DDL, DCL, DDLX). Returns array of syntax messages. Use this for CDS views, access controls, and metadata extensions. Example: syntaxCheckCdsUrl("/sap/bc/adt/ddic/ddl/sources/zcds_view")',
                 inputSchema: {
                     type: 'object',
                     properties: {
-                        cdsUrl: { type: 'string' }
+                        cdsUrl: { 
+                            type: 'string',
+                            description: 'URL of the CDS object. Examples: "/sap/bc/adt/ddic/ddl/sources/zcds_view", "/sap/bc/adt/acm/dcl/sources/zcds_access", "/sap/bc/adt/ddic/ddlx/sources/zcds_metadata"'
+                        }
                     },
                     required: ['cdsUrl']
                 }
             },
             {
                 name: 'codeCompletion',
-                description: 'Get code completion suggestions',
+                description: 'Get code completion suggestions at specific cursor position. Returns array of proposals with IDENTIFIER and metadata. Use this for intelligent code assistance. Example: codeCompletion("/sap/bc/adt/programs/programs/ztest/source/main", "DATA: lv_var TYPE string.\\nlv_", 2, 3)',
                 inputSchema: {
                     type: 'object',
                     properties: {
-                        sourceUrl: { type: 'string' },
-                        source: { type: 'string' },
-                        line: { type: 'number' },
-                        column: { type: 'number' }
+                        sourceUrl: { 
+                            type: 'string',
+                            description: 'URL of the object source with /source/main suffix. Examples: "/sap/bc/adt/programs/programs/ztest/source/main", "/sap/bc/adt/oo/classes/zcl_test/source/main"'
+                        },
+                        source: { 
+                            type: 'string',
+                            description: 'Complete ABAP source code up to the cursor position. Include the partial word being typed.'
+                        },
+                        line: { 
+                            type: 'number',
+                            description: 'Line number where completion is requested (1-based). First line = 1.'
+                        },
+                        column: { 
+                            type: 'number',
+                            description: 'Column position where completion is requested (1-based). First column = 1.'
+                        }
                     },
                     required: ['sourceUrl', 'source', 'line', 'column']
                 }
