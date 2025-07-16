@@ -8,13 +8,13 @@ export class ClassHandlers extends BaseHandler {
         return [
             {
                 name: 'classIncludes',
-                description: 'Get class includes structure',
+                description: 'Get class includes structure with include types and URLs. Returns Map with include types (definitions, implementations, testclasses) and their corresponding URLs. Used to navigate class structure and access specific includes. Example: classIncludes("ZAPIADT_TESTCASE_CLASS1") returns includes map.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         clas: {
                             type: 'string',
-                            description: 'The class name'
+                            description: 'The class name (without CL_ prefix). Examples: "ZAPIADT_TESTCASE_CLASS1", "ZCL_EXAMPLE" (use "ZCL_EXAMPLE", not "CL_ZCL_EXAMPLE")'
                         }
                     },
                     required: ['clas']
@@ -22,13 +22,13 @@ export class ClassHandlers extends BaseHandler {
             },
             {
                 name: 'classComponents',
-                description: 'List class components',
+                description: 'List class components including methods, attributes, types, and events. Returns detailed structure with component names, types, visibility, and navigation links. Use this to explore class structure and find specific components. Example: classComponents("/sap/bc/adt/oo/classes/zapiadt_testcase_class1") returns all class components.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         url: {
                             type: 'string',
-                            description: 'The URL of the class'
+                            description: 'The URL of the class (without /source/main suffix). Examples: "/sap/bc/adt/oo/classes/zapiadt_testcase_class1", "/sap/bc/adt/oo/classes/zcl_example"'
                         }
                     },
                     required: ['url']
@@ -36,21 +36,21 @@ export class ClassHandlers extends BaseHandler {
             },
             {
                 name: 'createTestInclude',
-                description: 'Create test include for class',
+                description: 'Create test include for class if it does not exist. Creates the testclasses include and initializes it with basic test class structure. REQUIRES class to be locked first. Returns success status. Use this to add unit tests to existing classes.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         clas: {
                             type: 'string',
-                            description: 'The class name'
+                            description: 'The class name (without CL_ prefix). Examples: "ZAPIADT_TESTCASE_CLASS1", "ZCL_EXAMPLE"'
                         },
                         lockHandle: {
                             type: 'string',
-                            description: 'The lock handle'
+                            description: 'The lock handle from lock operation. Class must be locked before creating test include.'
                         },
                         transport: {
                             type: 'string',
-                            description: 'The transport number',
+                            description: 'The transport request number. Required for transportable classes. Format: "SYSTEMK123456"',
                             optional: true
                         }
                     },

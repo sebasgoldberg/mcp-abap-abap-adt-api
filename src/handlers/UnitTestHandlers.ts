@@ -8,17 +8,17 @@ export class UnitTestHandlers extends BaseHandler {
         return [
             {
                 name: 'unitTestRun',
-                description: 'Runs unit tests.',
+                description: 'Runs unit tests for ABAP objects and returns test results with test classes, methods, and alerts. Returns array with test results including failures, alerts, and stack traces. Use this to validate code quality and functionality. Example: unitTestRun("/sap/bc/adt/programs/programs/zapiadtunitcases") returns test results with success/failure status.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         url: {
                             type: 'string',
-                            description: 'The URL of the object to test.'
+                            description: 'The URL of the object to test. Can be program, class, or other testable objects. Examples: "/sap/bc/adt/programs/programs/zapiadtunitcases", "/sap/bc/adt/oo/classes/zcl_example/source/main"'
                         },
                         flags: {
                             type: 'string',
-                            description: 'Flags for the unit test run.',
+                            description: 'Flags for the unit test run. Optional test execution flags to control test behavior. Usually not needed for standard test runs.',
                             optional: true
                         }
                     },
@@ -27,17 +27,17 @@ export class UnitTestHandlers extends BaseHandler {
             },
             {
                 name: 'unitTestEvaluation',
-                description: 'Evaluates unit test results.',
+                description: 'Evaluates unit test results for a specific test class. Returns detailed information about test methods and their execution results. Use this to get detailed analysis of test class performance. Typically used after unitTestRun to get more details about specific test classes.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         clas: {
                             type: 'string',
-                            description: 'The class to evaluate.'
+                            description: 'The test class object to evaluate. Usually obtained from unitTestRun results. Should be a test class object with adtcore:name property.'
                         },
                         flags: {
                             type: 'string',
-                            description: 'Flags for the unit test evaluation.',
+                            description: 'Flags for the unit test evaluation. Optional evaluation flags to control analysis behavior.',
                             optional: true
                         }
                     },
@@ -46,17 +46,17 @@ export class UnitTestHandlers extends BaseHandler {
             },
             {
                 name: 'unitTestOccurrenceMarkers',
-                description: 'Retrieves unit test occurrence markers.',
+                description: 'Retrieves unit test occurrence markers for source code highlighting and navigation. Returns markers with location information for test coverage and debugging. Use this to show test execution points in source code. Helps identify which lines were executed during tests.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         url: {
                             type: 'string',
-                            description: 'The URL of the object.'
+                            description: 'The URL of the test method or object. Usually obtained from test results navigation URIs. Examples: test method navigationUri from unitTestRun results'
                         },
                         source: {
                             type: 'string',
-                            description: 'The source code.'
+                            description: 'The source code of the test object. Complete source code where markers should be applied. Usually obtained from getObjectSource.'
                         }
                     },
                     required: ['url', 'source']
@@ -64,21 +64,21 @@ export class UnitTestHandlers extends BaseHandler {
             },
             {
                 name: 'createTestInclude',
-                description: 'Creates a test include for a class.',
+                description: 'Creates a test include for a class if it does not exist. Initializes the testclasses include with basic test class structure and framework setup. REQUIRES class to be locked first. Use this to add unit testing capability to existing classes.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         clas: {
                             type: 'string',
-                            description: 'The class name.'
+                            description: 'The class name (without CL_ prefix). Examples: "ZAPIADT_TESTCASE_CLASS1", "ZCL_EXAMPLE"'
                         },
                         lockHandle: {
                             type: 'string',
-                            description: 'The lock handle.'
+                            description: 'The lock handle from lock operation. Class must be locked before creating test include.'
                         },
                         transport: {
                             type: 'string',
-                            description: 'The transport.',
+                            description: 'The transport request number. Required for transportable classes. Format: "SYSTEMK123456"',
                             optional: true
                         }
                     },

@@ -39,17 +39,17 @@ export class ObjectManagementHandlers extends BaseHandler {
     return [
       {
         name: 'activateObjects',
-        description: 'Activate ABAP objects using object references',
+        description: 'Activate multiple ABAP objects using object references. Returns activation result with success status, messages, and remaining inactive objects. Use this for bulk activation after multiple object changes. Example: activateObjects(JSON.stringify([{adtcore:uri: "/sap/bc/adt/programs/programs/ztest", adtcore:type: "PROG/P", adtcore:name: "ZTEST", adtcore:parentUri: "/sap/bc/adt/packages/zpackage"}]))',
         inputSchema: {
           type: 'object',
           properties: {
             objects: { 
               type: 'string',
-              description: 'JSON array of objects to activate. Each object must have adtcore:uri, adtcore:type, adtcore:name, and adtcore:parentUri properties'
+              description: 'JSON array of objects to activate. Each object must have adtcore:uri, adtcore:type, adtcore:name, and adtcore:parentUri properties. Example: "[{\\\"adtcore:uri\\\":\\\"/sap/bc/adt/programs/programs/ztest\\\",\\\"adtcore:type\\\":\\\"PROG/P\\\",\\\"adtcore:name\\\":\\\"ZTEST\\\",\\\"adtcore:parentUri\\\":\\\"/sap/bc/adt/packages/zpackage\\\"}]"'
             },
             preauditRequested: {
               type: 'boolean',
-              description: 'Whether to perform pre-audit checks',
+              description: 'Whether to perform pre-audit checks before activation. Default: false. Set to true for additional validation.',
               optional: true
             }
           },
@@ -58,26 +58,26 @@ export class ObjectManagementHandlers extends BaseHandler {
       },
       {
         name: 'activateByName',
-        description: 'Activate an ABAP object using name and URL',
+        description: 'Activate a single ABAP object using name and URL. Returns activation result with success status and messages. Use this after making changes to an object. Must be called after setObjectSource and unlock. Example: activateByName("ZAPIDUMMYTESTPROG1", "/sap/bc/adt/programs/programs/zapidummytestprog1")',
         inputSchema: {
           type: 'object',
           properties: {
             objectName: {
               type: 'string',
-              description: 'Name of the object'
+              description: 'Name of the object to activate. Examples: "ZAPIDUMMYTESTPROG1", "ZCL_EXAMPLE", "ZFUNCGROUP"'
             },
             objectUrl: {
               type: 'string',
-              description: 'URL of the object'
+              description: 'URL of the object to activate (without /source/main suffix). Examples: "/sap/bc/adt/programs/programs/zapidummytestprog1", "/sap/bc/adt/oo/classes/zcl_example"'
             },
             mainInclude: {
               type: 'string',
-              description: 'Main include context',
+              description: 'Main include context for complex objects. Usually not needed for simple objects.',
               optional: true
             },
             preauditRequested: {
               type: 'boolean',
-              description: 'Whether to perform pre-audit checks',
+              description: 'Whether to perform pre-audit checks before activation. Default: false. Set to true for additional validation.',
               optional: true
             }
           },
@@ -86,7 +86,7 @@ export class ObjectManagementHandlers extends BaseHandler {
       },
       {
         name: 'inactiveObjects',
-        description: 'Get list of inactive objects',
+        description: 'Get list of inactive objects in the system. Returns array of inactive object records with object information, user, and transport details. Use this to identify objects that need activation. Objects become inactive after source code changes until they are activated.',
         inputSchema: {
           type: 'object',
           properties: {}

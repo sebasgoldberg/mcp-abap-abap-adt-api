@@ -7,7 +7,7 @@ export class AuthHandlers extends BaseHandler {
     return [
       {
         name: 'login',
-        description: 'Authenticate with ABAP system',
+        description: 'Authenticate with ABAP system using configured credentials. Establishes a session and retrieves CSRF token. Returns login result with session information. Must be called before any other ADT operations. Uses credentials from environment variables or configuration.',
         inputSchema: {
           type: 'object',
           properties: {}
@@ -15,7 +15,7 @@ export class AuthHandlers extends BaseHandler {
       },
       {
         name: 'logout',
-        description: 'Terminate ABAP session',
+        description: 'Terminate ABAP session and invalidate authentication tokens. Cleans up server-side session resources. Should be called when finished with ADT operations to properly release resources. Can be called multiple times safely.',
         inputSchema: {
           type: 'object',
           properties: {}
@@ -23,7 +23,7 @@ export class AuthHandlers extends BaseHandler {
       },
       {
         name: 'dropSession',
-        description: 'Clear local session cache',
+        description: 'Clear local session cache and force session cleanup. Used for stateful sessions to clean up locks and temporary data. Essential after lock operations to prevent session leaks. Does not invalidate authentication but clears session state.',
         inputSchema: {
           type: 'object',
           properties: {}
